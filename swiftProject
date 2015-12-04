@@ -1,0 +1,60 @@
+import UIKit
+
+class ViewController: UIViewController {
+    
+    var gradient : CAGradientLayer?
+    var toColors : AnyObject?
+    var fromColors : AnyObject?
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        self.gradient = CAGradientLayer()
+        self.gradient?.frame = self.view.bounds
+        self.gradient?.colors = [UIColor.greenColor().CGColor, UIColor.blueColor().CGColor]
+        self.view.layer.insertSublayer(self.gradient!, atIndex: 0)
+        
+        self.toColors = [UIColor.blueColor().CGColor, UIColor.blueColor().CGColor]
+        animateLayer()
+    }
+    
+    func animateLayer(){
+        
+        self.fromColors = self.gradient?.colors
+        self.gradient!.colors = self.toColors! as? [AnyObject]
+        let animation : CABasicAnimation = CABasicAnimation(keyPath: "colors")
+        animation.delegate = self
+        animation.fromValue = fromColors
+        animation.toValue = toColors
+        animation.duration = 20.00
+        animation.removedOnCompletion = true
+        animation.fillMode = kCAFillModeForwards
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        animation.delegate = self
+        
+        self.gradient?.addAnimation(animation, forKey:"animateGradient")
+    }
+    
+    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+        
+        self.toColors = self.fromColors;
+        self.fromColors = self.gradient?.colors
+        
+        animateLayer()
+    }
+    
+    
+    
+}
